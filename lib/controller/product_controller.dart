@@ -5,6 +5,7 @@ import 'package:shop_online_x/services/remote_services.dart';
 
 class ProductController extends GetxController {
   // ignore: deprecated_member_use
+  var isLoading = true.obs;
   var productList = <Product>[].obs;
   @override
   void onInit() {
@@ -14,9 +15,15 @@ class ProductController extends GetxController {
   }
 
   void fetchProducts() async {
-    var products = await RemoteServices.fetchProducts();
-    if (products != null) {
-      productList.value = products;
+    try {
+      isLoading(true);
+      var products = await RemoteServices.fetchProducts();
+      if (products != null) {
+        productList.value = products;
+      }
+    } finally {
+      isLoading(false);
     }
+    isLoading(false);
   }
 }

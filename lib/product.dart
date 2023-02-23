@@ -1,22 +1,24 @@
+// To parse this JSON data, do
+//
+//     final product = welcomeFromJson(jsonString);
 
 import 'dart:convert';
 
 List<Product> productsFromJson(String str) => List<Product>.from(json.decode(str).map((x) => Product.fromJson(x)));
 
-String productsToJson(List<Product> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Product {
     Product({
         required this.id,
-        this.brand,
+        required this.brand,
         required this.name,
-        this.price,
+        required this.price,
         this.priceSign,
         this.currency,
         required this.imageLink,
         required this.productLink,
         required this.websiteLink,
-        this.description,
+        required this.description,
         this.rating,
         this.category,
         required this.productType,
@@ -29,40 +31,40 @@ class Product {
     });
 
     int id;
-    String? brand;
+    Brand brand;
     String name;
-    String? price;
-    PriceSign? priceSign;
-    Currency? currency;
+    String price;
+    dynamic priceSign;
+    dynamic currency;
     String imageLink;
     String productLink;
     String websiteLink;
-    String? description;
+    String description;
     double? rating;
-    Category? category;
-    ProductType productType;
-    List<String> tagList;
+    String? category;
+    String productType;
+    List<dynamic> tagList;
     DateTime createdAt;
     DateTime updatedAt;
     String productApiUrl;
     String apiFeaturedImage;
     List<ProductColor> productColors;
 
-    factory Product.fromJson(Map<String, dynamic> json) =>Product(
+    factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"],
-        brand: json["brand"],
+        brand: brandValues.map[json["brand"]]!,
         name: json["name"],
         price: json["price"],
-        priceSign: priceSignValues.map[json["price_sign"]]!,
-        currency: currencyValues.map[json["currency"]]!,
+        priceSign: json["price_sign"],
+        currency: json["currency"],
         imageLink: json["image_link"],
         productLink: json["product_link"],
         websiteLink: json["website_link"],
         description: json["description"],
         rating: json["rating"]?.toDouble(),
-        category: categoryValues.map[json["category"]]!,
-        productType: productTypeValues.map[json["product_type"]]!,
-        tagList: List<String>.from(json["tag_list"].map((x) => x)),
+        category: json["category"],
+        productType: json["product_type"],
+        tagList: List<dynamic>.from(json["tag_list"].map((x) => x)),
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         productApiUrl: json["product_api_url"],
@@ -72,18 +74,18 @@ class Product {
 
     Map<String, dynamic> toJson() => {
         "id": id,
-        "brand": brand,
+        "brand": brandValues.reverse[brand],
         "name": name,
         "price": price,
-        "price_sign": priceSignValues.reverse[priceSign],
-        "currency": currencyValues.reverse[currency],
+        "price_sign": priceSign,
+        "currency": currency,
         "image_link": imageLink,
         "product_link": productLink,
         "website_link": websiteLink,
         "description": description,
         "rating": rating,
-        "category": categoryValues.reverse[category],
-        "product_type": productTypeValues.reverse[productType],
+        "category": category,
+        "product_type": productType,
         "tag_list": List<dynamic>.from(tagList.map((x) => x)),
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
@@ -93,39 +95,10 @@ class Product {
     };
 }
 
-enum Category { PENCIL, LIPSTICK, LIQUID, EMPTY, POWDER, LIP_GLOSS, GEL, CREAM, PALETTE, CONCEALER, HIGHLIGHTER, BB_CC, CONTOUR, LIP_STAIN, MINERAL }
+enum Brand { MAYBELLINE }
 
-final categoryValues = EnumValues({
-    "bb_cc": Category.BB_CC,
-    "concealer": Category.CONCEALER,
-    "contour": Category.CONTOUR,
-    "cream": Category.CREAM,
-    "": Category.EMPTY,
-    "gel": Category.GEL,
-    "highlighter": Category.HIGHLIGHTER,
-    "lipstick": Category.LIPSTICK,
-    "lip_gloss": Category.LIP_GLOSS,
-    "lip_stain": Category.LIP_STAIN,
-    "liquid": Category.LIQUID,
-    "mineral": Category.MINERAL,
-    "palette": Category.PALETTE,
-    "pencil": Category.PENCIL,
-    "powder": Category.POWDER
-});
-
-enum Currency { CAD, USD, GBP }
-
-final currencyValues = EnumValues({
-    "CAD": Currency.CAD,
-    "GBP": Currency.GBP,
-    "USD": Currency.USD
-});
-
-enum PriceSign { EMPTY, PRICE_SIGN }
-
-final priceSignValues = EnumValues({
-    "\u0024": PriceSign.EMPTY,
-    "£": PriceSign.PRICE_SIGN
+final brandValues = EnumValues({
+    "maybelline": Brand.MAYBELLINE
 });
 
 class ProductColor {
@@ -147,21 +120,6 @@ class ProductColor {
         "colour_name": colourName,
     };
 }
-
-enum ProductType { LIP_LINER, LIPSTICK, FOUNDATION, EYELINER, EYESHADOW, BLUSH, BRONZER, MASCARA, EYEBROW, NAIL_POLISH }
-
-final productTypeValues = EnumValues({
-    "blush": ProductType.BLUSH,
-    "bronzer": ProductType.BRONZER,
-    "eyebrow": ProductType.EYEBROW,
-    "eyeliner": ProductType.EYELINER,
-    "eyeshadow": ProductType.EYESHADOW,
-    "foundation": ProductType.FOUNDATION,
-    "lipstick": ProductType.LIPSTICK,
-    "lip_liner": ProductType.LIP_LINER,
-    "mascara": ProductType.MASCARA,
-    "nail_polish": ProductType.NAIL_POLISH
-});
 
 class EnumValues<T> {
     Map<String, T> map;

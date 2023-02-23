@@ -34,15 +34,15 @@ class HomePage extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(13.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
                 const Expanded(
                   child: Text(
                     'MiShop',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -54,8 +54,11 @@ class HomePage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Obx(
-              () => StaggeredGridView.countBuilder(
+            child: Obx(() {
+              if (productController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return StaggeredGridView.countBuilder(
                 crossAxisCount: 2,
                 itemCount: productController.productList.length,
                 mainAxisSpacing: 16,
@@ -64,8 +67,8 @@ class HomePage extends StatelessWidget {
                   return ProductTile(productController.productList[index]);
                 },
                 staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
-              ),
-            ),
+              );
+            }),
           ),
         ],
       ),
